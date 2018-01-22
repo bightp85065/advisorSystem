@@ -13,16 +13,23 @@ namespace advisorSystem.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult Student()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "Link your mssql.";
 
             return View();
         }
 
-        public ActionResult Contact()
+        public ActionResult Teacher()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Link your mssql.";
+
+            return View();
+        }
+
+        public ActionResult Admin()
+        {
+            ViewBag.Message = "Link your mssql.";
 
             return View();
         }
