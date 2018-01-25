@@ -9,6 +9,10 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using advisorSystem.Models;
+using advisorSystem.lib;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace advisorSystem.Controllers
 {
@@ -20,6 +24,35 @@ namespace advisorSystem.Controllers
 
         public AccountController()
         {
+        }
+
+
+        //
+        [AllowAnonymous]
+        public ActionResult test(string returnUrl)
+        {
+
+            JObject bbb = new JObject();
+            SQLHelper aaa = new SQLHelper();
+
+            bbb["s_id"] = "123456789";
+            bbb["s_name"] = "123456789";
+            bbb["s_department"] = 1;
+            bbb["s_group"] = 1;
+            bbb["s_state"] = 1;
+
+            int returnValue = aaa.insert("[ntust].[student]", bbb);
+            if (returnValue==0)
+            {
+                return new HttpStatusCodeResult(404);
+            }
+            else
+            {
+                return new HttpStatusCodeResult(200);
+            }
+
+            //ViewBag.ReturnUrl = returnUrl;
+            
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )

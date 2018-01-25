@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace advisorSystem.Models
 {
+
     public class ExternalLoginConfirmationViewModel
     {
         [Required]
@@ -79,6 +80,10 @@ namespace advisorSystem.Models
         [Display(Name = "確認密碼")]
         [Compare("Password", ErrorMessage = "密碼和確認密碼不相符。")]
         public string ConfirmPassword { get; set; }
+        
+        [DataType(DataType.Text)]
+        [Display(Name = "帳號身分")]
+        public string Role { get; set; }
     }
 
     public class ResetPasswordViewModel
