@@ -35,12 +35,11 @@ namespace advisorSystem.Controllers
             JObject bbb = new JObject();
             SQLHelper aaa = new SQLHelper();
 
-            bbb["s_id"] = "123456789";
+            bbb["s_id"] = "test";
             bbb["s_name"] = "123456789";
             bbb["s_department"] = 1;
             bbb["s_group"] = 1;
             bbb["s_state"] = 1;
-
             int returnValue = aaa.insert("[ntust].[student]", bbb);
             if (returnValue==0)
             {

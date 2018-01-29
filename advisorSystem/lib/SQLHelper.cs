@@ -11,9 +11,9 @@ namespace advisorSystem.lib
 {
     public class SQLHelper
     {
-        public static string connString = System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ToString();
+        public static string connString = System.Configuration.ConfigurationManager.ConnectionStrings["RaymondConnection"].ToString();
 
-        public static SqlConnection cn;
+        public SqlConnection cn;
 
         public SQLHelper()
         {
@@ -77,7 +77,7 @@ namespace advisorSystem.lib
 
             
             try{
-                int modified = (int)sqlCmd.ExecuteScalar();
+                int modified = (int)sqlCmd.ExecuteNonQuery();
 
                 if (cn.State == System.Data.ConnectionState.Open)
                     cn.Close();
