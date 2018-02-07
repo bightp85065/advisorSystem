@@ -7,6 +7,7 @@ using System.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+
 namespace advisorSystem.lib
 {
     public class SQLHelper
@@ -15,36 +16,57 @@ namespace advisorSystem.lib
 
         public SqlConnection cn;
 
+        public JObject queryResult = new JObject();
+
         public SQLHelper()
         {
             cn = new SqlConnection(connString);
         }
 
-        public void select()
+        public JObject select(string table, JObject dataArr, string condi="", string select="*")
         {
-            string sql = @"INSERT INTO [ntust].[table](Column1,Column2,Column3)";
-            int DeviceStatusID = 0;
-            string DeviceStatusName = "";
-
-            cn.Open();
-            using (SqlCommand cmd = new SqlCommand(sql, cn))
+            JArray data = new JArray();
+            String whereCondi = "WHERE ";
+            foreach (var x in dataArr)
             {
-                using (SqlDataReader dr = cmd.ExecuteReader())
+                whereCondi += x.Key + "='"+x.Value+"' AND";
+            }
+            whereCondi = whereCondi.Substring(0, whereCondi.Length - 3);
+
+            string qs = "SELECT "+select+" FROM "+ table + " "+ condi + ";";
+
+            System.Diagnostics.Debug.Print(qs);
+
+            using (cn)
+            {
+
+                //2.開啟資料庫
+                cn.Open();
+                //3.引用SqlCommand物件
+                SqlCommand command = new SqlCommand(qs, cn);
+
+                using (SqlDataReader dr = command.ExecuteReader())
                 {
                     while (dr.Read())
                     {
-                        DeviceStatusID = Convert.ToInt32(dr["DeviceStatusID"]);
-                        DeviceStatusName = dr["DeviceStatusName"].ToString();
+                        data.Add(new JObject());
+                        for (int i = 0; i < dr.FieldCount; ++i){
+                            data[data.Count-1][dr.GetName(i)]= dr[i].ToString();
+                        }
                     }
                     dr.Close();
                 }
-
+                cn.Close();
             }
-            cn.Close();
+            queryResult["status"] = true;
+            queryResult["data"] = data;
+            return queryResult;
+
         }
 
-        public int insert(String table, JObject dataArr)
+        public JObject insert(String table, JObject dataArr)
         {
+            
             // 將 JSON 字串變成物件
             //JObject obj = JObject.Parse(@"{""Name"": ""Eric""}");
             //obj["Name"] == "Eric"
@@ -59,17 +81,14 @@ namespace advisorSystem.lib
             foreach (var x in dataArr) {
                 columnStr += x.Key + ",";
                 valueStr += "@" + x.Key + ",";
-                //queryStr += "@" + x.Key + ",";
             }
             columnStr = columnStr.Substring(0, columnStr.Length-1);
             valueStr = valueStr.Substring(0, valueStr.Length - 1);
 
             queryStr += columnStr+") values ("+ valueStr+")";
 
-            System.Diagnostics.Debug.Print(queryStr);
             cn.Open();
             SqlCommand sqlCmd = new SqlCommand(queryStr, cn);
-
             foreach (var x in dataArr)
             {
                 sqlCmd.Parameters.AddWithValue("@"+ x.Key, x.Value.ToString());
@@ -79,60 +98,115 @@ namespace advisorSystem.lib
             try{
                 int modified = (int)sqlCmd.ExecuteNonQuery();
 
+                //int modified = (int)sqlCmd.ExecuteScalar();
+
+                if (cn.State == System.Data.ConnectionState.Open)
+                    cn.Close();
+
+                queryResult["status"] = true;
+                return queryResult;
+            }
+            catch (SqlException odbcEx)
+            {
+                // Handle more specific SqlException exception here.
+                System.Diagnostics.Debug.Print(odbcEx.ToString());
+
+                JArray errorMessages = new JArray();
+
+                queryResult["status"] = false;
+
+                for (int i = 0; i < odbcEx.Errors.Count; i++)
+                {
+                    errorMessages.Add(odbcEx.Errors[i].Message);
+                    //errorMessages[i] = odbcEx.Errors[i].Message;
+                }
+
+                queryResult["msg"] = errorMessages;
+                queryResult["code"] = odbcEx.Number;
+                return queryResult;
+            }
+            catch (Exception ex)
+            {
+                // Handle generic ones here.
+                System.Diagnostics.Debug.Print(ex.ToString());
+
+                queryResult["status"] = false;
+                queryResult["msg"] = ex.ToString();
+                return queryResult;
+            }
+
+        }
+
+
+
+        public JObject delete(String table, JObject dataArr)
+        {
+
+            string queryStr = "DELETE FROM " + table + "";
+            string columnCondi = " WHERE";
+            foreach (var x in dataArr)
+            {
+                columnCondi += " " + x.Key + " = @" + x.Key + " AND";
+            }
+            columnCondi = columnCondi.Substring(0, columnCondi.Length - 3);
+            queryStr += columnCondi;
+
+            System.Diagnostics.Debug.Print("------------");
+            System.Diagnostics.Debug.Print(queryStr);
+
+            cn.Open();
+            SqlCommand sqlCmd = new SqlCommand(queryStr, cn);
+
+            foreach (var x in dataArr)
+            {
+                sqlCmd.Parameters.AddWithValue("@" + x.Key, x.Value.ToString());
+            }
+
+
+            try
+            {
+                int modified = (int)sqlCmd.ExecuteNonQuery();
+
+                //int modified = (int)sqlCmd.ExecuteScalar();
+
                 if (cn.State == System.Data.ConnectionState.Open)
                     cn.Close();
 
                 //cn.Close();
-
-                return modified;
+                queryResult["status"] = true;
+                return queryResult;
             }
-            catch (Exception e){
-                System.Diagnostics.Debug.Print(e.ToString());
-                return 0;
-            }
-            
+            catch (SqlException odbcEx)
+            {
+                // Handle more specific SqlException exception here.
+                System.Diagnostics.Debug.Print(odbcEx.ToString());
 
+                JArray errorMessages = new JArray();
+
+                queryResult["status"] = false;
+
+                for (int i = 0; i < odbcEx.Errors.Count; i++)
+                {
+                    errorMessages.Add(odbcEx.Errors[i].Message);
+                    //errorMessages[i] = odbcEx.Errors[i].Message;
+                }
+
+                queryResult["msg"] = errorMessages;
+                queryResult["code"] = odbcEx.Number;
+                return queryResult;
+            }
+            catch (Exception ex)
+            {
+                // Handle generic ones here.
+                System.Diagnostics.Debug.Print(ex.ToString());
+
+                queryResult["status"] = false;
+                queryResult["msg"] = ex.ToString();
+                return queryResult;
+            }
 
         }
-        /*public static string strConn = System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-        
-        //建立連接
-        public static SqlConnection myConn = new SqlConnection(strConn);
-
-        //打開連接
-        myConn.Open();
-
-
-        String strSQL = @"select * from tableName";
-
-
-        //建立SQL命令對象
-        SqlCommand myCommand = new SqlCommand(strSQL, myConn);
-
-
-        //得到Data結果集
-        SqlDataReader myDataReader = myCommand.ExecuteReader();
-
-
-
-        //讀取結果
-        while (myDataReader.Read())
-        {
-            if (myDataReader["id"].ToString() != "")
-            {
-                TextBox1.Text += myDataReader["id"].ToString();
-                TextBox1.Text += " : ";
-                TextBox1.Text += myDataReader["phoneTel"].ToString();
-                TextBox1.Text += Environment.NewLine;                 //跳行
-            }
-        }*/
-
-
-        //public static string connString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ToString();
-
-        //public static SqlConnection cn;
-
-
 
     }
 }
+ 

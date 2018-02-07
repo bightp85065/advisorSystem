@@ -33,25 +33,88 @@ namespace advisorSystem.Controllers
         {
 
             JObject bbb = new JObject();
-            SQLHelper aaa = new SQLHelper();
+            SQLHelper sqlHelper = new SQLHelper();
 
-            bbb["s_id"] = "test";
+            bbb["s_id"] = "123456789";
             bbb["s_name"] = "123456789";
             bbb["s_department"] = 1;
             bbb["s_group"] = 1;
             bbb["s_state"] = 1;
-            int returnValue = aaa.insert("[ntust].[student]", bbb);
-            if (returnValue==0)
-            {
-                return new HttpStatusCodeResult(404);
-            }
-            else
+            JObject returnValue = sqlHelper.insert("[ntust].[student]", bbb);
+            if ((bool)returnValue["status"])
             {
                 return new HttpStatusCodeResult(200);
             }
+            else
+            {
+                String msg = returnValue["msg"].ToString();
+                /*switch (msg) {
+                    case "a":
+
+
+                }*/
+                return Content(msg);
+
+                //return new HttpStatusCodeResult(404);
+            }
 
             //ViewBag.ReturnUrl = returnUrl;
+
+        }
+
+        [AllowAnonymous]
+        public ActionResult testSelect(string returnUrl)
+        {
+
+            JObject bbb = new JObject();
+            SQLHelper sqlHelper = new SQLHelper();
+
+            bbb["s_id"] = "123456789";
+            bbb["s_name"] = "123456789";
             
+            JObject returnValue = sqlHelper.select("[ntust].[student]", bbb);
+            if ((bool)returnValue["status"])
+            {
+                return Content(returnValue["data"].ToString());
+            }
+            else
+            {
+                String msg = returnValue["msg"].ToString();
+                /*switch (msg) {
+                    case "a":
+
+
+                }*/
+                return Content(msg);
+
+            }
+
+        }
+
+        [AllowAnonymous]
+        public ActionResult testDelete(string returnUrl)
+        {
+
+            JObject bbb = new JObject();
+            SQLHelper sqlHelper = new SQLHelper();
+
+            bbb["s_id"] = "123456789";
+
+            JObject returnValue = sqlHelper.delete("[ntust].[student]", bbb);
+            if ((bool)returnValue["status"])
+            {
+                return Content("delete success");
+                //return new HttpStatusCodeResult(200);
+            }
+            else
+            {
+                String msg = returnValue["msg"].ToString();
+                
+                return Content(msg);
+
+                //return new HttpStatusCodeResult(404);
+            }
+
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
