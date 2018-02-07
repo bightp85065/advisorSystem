@@ -48,6 +48,10 @@ TestResults/
 *.rar
 *.tar
 *.zip
+*.ide-shm
+*.ide-wal
+*.ldf
+*.mdf
 ######################
 # Logs and databases #
 ######################

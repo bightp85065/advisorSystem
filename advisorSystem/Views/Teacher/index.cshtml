@@ -9,6 +9,7 @@
 }
 <p></p>
 <script>
+    var _factoryJSONObjs = $.parseJSON(jsonStringFilter('@ViewBag.teacherStudent'));
     $(document).ready(function () {
         console.log("ready!");
         $('#example').DataTable();

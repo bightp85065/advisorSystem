@@ -29,6 +29,12 @@ namespace advisorSystem.Controllers
 
         public ActionResult Index()
         {
+
+
+
+
+
+
             return View();
         }
 
