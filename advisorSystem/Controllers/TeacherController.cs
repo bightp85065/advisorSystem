@@ -41,7 +41,8 @@ namespace advisorSystem.Controllers
                                                 " JOIN [ntust].[student] as s on s.s_id=p.p_s_id", teacher);
             if ((bool)returnValue["status"])
             {
-                return Content(returnValue["data"].ToString());
+                ViewBag.teacherStudent = returnValue["data"].ToString();
+                return View();
             }
             else
             {
@@ -58,7 +59,7 @@ namespace advisorSystem.Controllers
 
 
 
-            return View();
+            
         }
 
         //

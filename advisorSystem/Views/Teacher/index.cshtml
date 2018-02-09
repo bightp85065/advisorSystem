@@ -7,7 +7,7 @@
 @section Scripts {
     @Scripts.Render("~/bundles/datatable")
 }
-<p></p>
+<p>@ViewBag.teacherStudent</p>
 <script>
     var _factoryJSONObjs = $.parseJSON(jsonStringFilter('@ViewBag.teacherStudent'));
     $(document).ready(function () {
