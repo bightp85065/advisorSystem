@@ -27,10 +27,33 @@ namespace advisorSystem.Controllers
         }
 
 
+        [AllowAnonymous]
         public ActionResult Index()
         {
+            //get teacher student
+            JObject teacher = new JObject();
+            SQLHelper sqlHelper = new SQLHelper();
+
+            teacher["tg.t_id"] = "1";
+
+            JObject returnValue = sqlHelper.select("[ntust].[teacher_group] as tg" +
+                                                " JOIN [ntust].[pair] as p on p.p_tg_id=tg.tg_id" +
+                                                " JOIN [ntust].[student] as s on s.s_id=p.p_s_id", teacher);
+            if ((bool)returnValue["status"])
+            {
+                return Content(returnValue["data"].ToString());
+            }
+            else
+            {
+                String msg = returnValue["msg"].ToString();
+                /*switch (msg) {
+                    case "a":
 
 
+                }*/
+                return Content(msg);
+
+            }
 
 
 

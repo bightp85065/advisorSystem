@@ -32,8 +32,9 @@ namespace advisorSystem.lib
                 whereCondi += x.Key + "='"+x.Value+"' AND";
             }
             whereCondi = whereCondi.Substring(0, whereCondi.Length - 3);
+            
 
-            string qs = "SELECT "+select+" FROM "+ table + " "+ condi + ";";
+            string qs = "SELECT "+select+" FROM "+ table + " "+ condi + whereCondi + ";";
 
             System.Diagnostics.Debug.Print(qs);
 
