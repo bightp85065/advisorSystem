@@ -34,14 +34,14 @@ namespace advisorSystem.Controllers
             JObject teacher = new JObject();
             SQLHelper sqlHelper = new SQLHelper();
 
-            teacher["tg.t_id"] = "1";
+            teacher["tg.t_id"] = "jsleu";
 
             JObject returnValue = sqlHelper.select("[ntust].[teacher_group] as tg" +
                                                 " JOIN [ntust].[pair] as p on p.p_tg_id=tg.tg_id" +
                                                 " JOIN [ntust].[student] as s on s.s_id=p.p_s_id", teacher);
             if ((bool)returnValue["status"])
             {
-                ViewBag.teacherStudent = returnValue["data"].ToString();
+                ViewBag.teacherStudent = returnValue["data"].ToString(Formatting.None);
                 return View();
             }
             else

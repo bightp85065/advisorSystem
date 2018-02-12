@@ -6,7 +6,7 @@
 *.dll
 *.exe
 *.pdb
-*.dll.config
+*.config
 *.cache
 *.suo
 
@@ -52,6 +52,7 @@ TestResults/
 *.ide-wal
 *.ldf
 *.mdf
+*.pdb
 ######################
 # Logs and databases #
 ######################

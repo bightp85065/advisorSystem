@@ -21,6 +21,7 @@ namespace advisorSystem.lib
         public SQLHelper()
         {
             cn = new SqlConnection(connString);
+            System.Diagnostics.Debug.Print(connString);
         }
 
         public JObject select(string table, JObject dataArr, string condi="", string select="*")

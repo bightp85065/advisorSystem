@@ -11,11 +11,11 @@ namespace advisorSystem
 
             bundles.Add(new ScriptBundle("~/bundles/datatable").Include(
                         "~/Scripts/DataTables/datatables.min.js"));
-
+            bundles.Add(new ScriptBundle("~/bundles/global").Include(
+                        "~/Scripts/global.js"));
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js",
-                        "~/Scripts/jquery-3.3.1.min.js",
-                        "~/Scripts/GloblaScript.js"));
+                        "~/Scripts/global.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
