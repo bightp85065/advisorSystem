@@ -84,6 +84,7 @@ namespace advisorSystem.Models
         [DataType(DataType.Text)]
         [Display(Name = "帳號身分")]
         public string Role { get; set; }
+        public string RoleName { get; set; }
     }
 
     public class ResetPasswordViewModel
